@@ -1,7 +1,7 @@
 import datetime
 from flask import Flask, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
-import requests
+import xmlrpc.client
 # from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -13,6 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 db = SQLAlchemy(app)
 
+s = xmlrpc.client.ServerProxy('http://localhost:8000')
 
 class TrainingForm(FlaskForm):
     sessionName = StringField(validators=[
@@ -42,6 +43,8 @@ def control_panel():
             dataSetName=form.dataSetName.data, 
             timeStamp=datetime.datetime.now())
         print(new_session.sessionName)
+        # new process call
+        s.train()
         # requests.get("146.", 
         #     params={
         #         'sessionName': form.sessionName.data, 
